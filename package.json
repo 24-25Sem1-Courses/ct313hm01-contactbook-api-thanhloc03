@@ -16,5 +16,9 @@
     "eslint-plugin-vue": "^9.28.0",
     "globals": "^15.9.0",
     "prettier": "^3.3.3"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.20.0"
   }
 }
