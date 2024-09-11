@@ -3,12 +3,12 @@
 const express = require("express");
 const cors = require("cors");
 
-const JSend = require('./jsend');
+const JSend = require("./jsend");
 const contactsRouter = require("./routes/contacts.router");
 const {
   resourceNotFound,
   handleError,
-} = require('./controllers/errors.controller');
+} = require("./controllers/errors.controller");
 
 const app = express();
 
@@ -17,10 +17,10 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.get("/", (req, res) => {
-  return res.json({
-    message: "ok",
-  });
+  return res.json(JSend.success());
 });
+
+app.use("/public", express.static("public"));
 
 contactsRouter.setup(app);
 
