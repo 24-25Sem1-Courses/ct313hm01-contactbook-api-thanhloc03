@@ -1,4 +1,4 @@
-/*global module*/
+
 
 /**
 * @param {object | null} data

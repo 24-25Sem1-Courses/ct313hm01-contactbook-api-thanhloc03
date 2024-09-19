@@ -1,4 +1,4 @@
-/*global require, module*/
+
 
 const express = require("express");
 const cors = require("cors");

@@ -1,4 +1,4 @@
-/*global module require*/
+
 
 const ApiError = require("../api-error");
 const JSend = require("../jsend");

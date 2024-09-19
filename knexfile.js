@@ -1,8 +1,7 @@
 // Update with your config settings.
 
-/*global module require process*/
 require("dotenv").config();
-const { DB_HOST, DB_PORT, DB_USER, DB_NAME } = process.env;
+const { DB_HOST, DB_PORT, DB_USER, DB_PASS, DB_NAME } = process.env;
 
 /**
  * @type { Object.<string, import("knex").Knex.Config> }
@@ -14,7 +13,7 @@ module.exports = {
       host: DB_HOST,
       port: DB_PORT,
       user: DB_USER,
-      // password: DB_PASS,
+      password: DB_PASS,
       database: DB_NAME,
     },
 

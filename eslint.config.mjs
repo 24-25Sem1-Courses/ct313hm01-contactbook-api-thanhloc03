@@ -1,12 +1,12 @@
 import globals from "globals";
 import pluginJs from "@eslint/js";
-import pluginVue from "eslint-plugin-vue";
+import pluginReact from "eslint-plugin-react";
 
 
 export default [
-  {files: ["**/*.{js,mjs,cjs,vue}"]},
+  {files: ["**/*.{js,mjs,cjs,jsx}"]},
   {files: ["**/*.js"], languageOptions: {sourceType: "commonjs"}},
-  {languageOptions: { globals: globals.browser }},
+  {languageOptions: { globals: globals.node }},
   pluginJs.configs.recommended,
-  ...pluginVue.configs["flat/essential"],
+  pluginReact.configs.flat.recommended,
 ];
