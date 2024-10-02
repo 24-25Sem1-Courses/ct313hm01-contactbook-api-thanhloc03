@@ -31,8 +31,8 @@ module.exports.setup = (app) => {
    *         schema:
    *           type: string
    *         description: Filter by contact name
-   *       - $ref : '#/components/parameters/limitParam'
-   *       - $ref : '#/components/parameters/pageParam'
+   *       - $ref: '#/components/parameters/limitParam'
+   *       - $ref: '#/components/parameters/pageParam'
    *     tags:
    *       - contacts
    *     responses:
@@ -56,7 +56,79 @@ module.exports.setup = (app) => {
    *                         $ref: '#/components/schemas/Contact'
    *                     metadata:
    *                       $ref: '#/components/schemas/PaginationMetadata'
+   *       400:
+   *         description: Bad Request - Invalid parameters or missing required fields.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               properties:
+   *                 status:
+   *                   type: string
+   *                   description: The response status
+   *                   enum: [error]
+   *                 message:
+   *                   type: string
+   *                   description: Detailed error message
+   *       401:
+   *         description: Unauthorized - Authentication required.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               properties:
+   *                 status:
+   *                   type: string
+   *                   description: The response status
+   *                   enum: [error]
+   *                 message:
+   *                   type: string
+   *                   description: Detailed error message
+   *       403:
+   *         description: Forbidden - Access denied.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               properties:
+   *                 status:
+   *                   type: string
+   *                   description: The response status
+   *                   enum: [error]
+   *                 message:
+   *                   type: string
+   *                   description: Detailed error message
+   *       404:
+   *         description: Not Found - No contacts matching the filter criteria were found.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               properties:
+   *                 status:
+   *                   type: string
+   *                   description: The response status
+   *                   enum: [error]
+   *                 message:
+   *                   type: string
+   *                   description: Detailed error message
+   *       500:
+   *         description: Internal Server Error - The server encountered an unexpected condition.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               properties:
+   *                 status:
+   *                   type: string
+   *                   description: The response status
+   *                   enum: [error]
+   *                 message:
+   *                   type: string
+   *                   description: Detailed error message
    */
+  router.get("/", contactsController.getContactsByFilter);
+
   router.get("/", contactsController.getContactsByFilter);
 
   /**
@@ -75,7 +147,7 @@ module.exports.setup = (app) => {
    *       - contacts
    *     responses:
    *       201:
-   *         description: A new contact
+   *         description: A new contact has been created
    *         content:
    *           application/json:
    *             schema:
@@ -90,20 +162,165 @@ module.exports.setup = (app) => {
    *                   properties:
    *                     contact:
    *                       $ref: '#/components/schemas/Contact'
+   *       400:
+   *         description: Bad Request - Invalid input or missing required fields.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               properties:
+   *                 status:
+   *                   type: string
+   *                   description: The response status
+   *                   enum: [error]
+   *                 message:
+   *                   type: string
+   *                   description: Detailed error message
+   *       401:
+   *         description: Unauthorized - Authentication required.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               properties:
+   *                 status:
+   *                   type: string
+   *                   description: The response status
+   *                   enum: [error]
+   *                 message:
+   *                   type: string
+   *                   description: Detailed error message
+   *       403:
+   *         description: Forbidden - Access denied.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               properties:
+   *                 status:
+   *                   type: string
+   *                   description: The response status
+   *                   enum: [error]
+   *                 message:
+   *                   type: string
+   *                   description: Detailed error message
+   *       409:
+   *         description: Conflict - The contact already exists.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               properties:
+   *                 status:
+   *                   type: string
+   *                   description: The response status
+   *                   enum: [error]
+   *                 message:
+   *                   type: string
+   *                   description: Detailed error message
+   *       422:
+   *         description: Unprocessable Entity - Validation errors.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               properties:
+   *                 status:
+   *                   type: string
+   *                   description: The response status
+   *                   enum: [error]
+   *                 message:
+   *                   type: string
+   *                   description: Detailed error message
+   *       500:
+   *         description: Internal Server Error - The server encountered an unexpected condition.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               properties:
+   *                 status:
+   *                   type: string
+   *                   description: The response status
+   *                   enum: [error]
+   *                 message:
+   *                   type: string
+   *                   description: Detailed error message
    */
   router.post("/", contactsController.createContact);
   router.post("/", avatarUpload, contactsController.createContact);
+
   /**
    * @swagger
    * /api/v1/contacts:
-   *  delete:
-   *    sunmary: Delete all contacts
-   *    tags:
-   *      - contacts
-   *    responses:
-   *      200:
-   *        description: All contacts deleted
-   *        $ref: '#/components/responses/200NoData'
+   *   delete:
+   *     summary: Delete all contacts
+   *     description: Deletes all contacts from the database.
+   *     tags:
+   *       - contacts
+   *     responses:
+   *       200:
+   *         description: All contacts deleted
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: '#/components/responses/200NoData'
+   *       400:
+   *         description: Bad Request - Invalid request.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               properties:
+   *                 status:
+   *                   type: string
+   *                   description: The response status
+   *                   enum: [error]
+   *                 message:
+   *                   type: string
+   *                   description: Detailed error message
+   *       401:
+   *         description: Unauthorized - Authentication required.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               properties:
+   *                 status:
+   *                   type: string
+   *                   description: The response status
+   *                   enum: [error]
+   *                 message:
+   *                   type: string
+   *                   description: Detailed error message
+   *       403:
+   *         description: Forbidden - Access denied.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               properties:
+   *                 status:
+   *                   type: string
+   *                   description: The response status
+   *                   enum: [error]
+   *                 message:
+   *                   type: string
+   *                   description: Detailed error message
+   *       500:
+   *         description: Internal Server Error - The server encountered an unexpected condition.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               properties:
+   *                 status:
+   *                   type: string
+   *                   description: The response status
+   *                   enum: [error]
+   *                 message:
+   *                   type: string
+   *                   description: Detailed error message
    */
   router.delete("/", contactsController.deleteAllContacts);
   router.all("/", methodNotAllowed);
@@ -112,15 +329,15 @@ module.exports.setup = (app) => {
    * @swagger
    * /api/v1/contacts/{id}:
    *   get:
-   *     summary: Get contacts by ID
-   *     description: Get contacts by ID
+   *     summary: Get contact by ID
+   *     description: Retrieve a contact by its ID
    *     parameters:
    *       - $ref: '#/components/parameters/contactIdParam'
    *     tags:
    *       - contacts
    *     responses:
    *       200:
-   *         description: A contact
+   *         description: A contact was found
    *         content:
    *           application/json:
    *             schema:
@@ -134,7 +351,77 @@ module.exports.setup = (app) => {
    *                   type: object
    *                   properties:
    *                     contact:
-   *                        $ref: '#/components/schemas/Contact'
+   *                       $ref: '#/components/schemas/Contact'
+   *       400:
+   *         description: Bad Request - Invalid ID format.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               properties:
+   *                 status:
+   *                   type: string
+   *                   description: The response status
+   *                   enum: [error]
+   *                 message:
+   *                   type: string
+   *                   description: Detailed error message
+   *       401:
+   *         description: Unauthorized - Authentication required.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               properties:
+   *                 status:
+   *                   type: string
+   *                   description: The response status
+   *                   enum: [error]
+   *                 message:
+   *                   type: string
+   *                   description: Detailed error message
+   *       403:
+   *         description: Forbidden - Access denied.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               properties:
+   *                 status:
+   *                   type: string
+   *                   description: The response status
+   *                   enum: [error]
+   *                 message:
+   *                   type: string
+   *                   description: Detailed error message
+   *       404:
+   *         description: Not Found - Contact not found.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               properties:
+   *                 status:
+   *                   type: string
+   *                   description: The response status
+   *                   enum: [error]
+   *                 message:
+   *                   type: string
+   *                   description: Detailed error message
+   *       500:
+   *         description: Internal Server Error - The server encountered an unexpected condition.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               properties:
+   *                 status:
+   *                   type: string
+   *                   description: The response status
+   *                   enum: [error]
+   *                 message:
+   *                   type: string
+   *                   description: Detailed error message
    */
   router.get("/:id", contactsController.getContact);
 
@@ -147,16 +434,16 @@ module.exports.setup = (app) => {
    *     parameters:
    *       - $ref: '#/components/parameters/contactIdParam'
    *     requestBody:
-   *      required: true
-   *      content:
-   *        multipart/form-data:
-   *          schema:
-   *            $ref: '#/components/schemas/Contact'
+   *       required: true
+   *       content:
+   *         multipart/form-data:
+   *           schema:
+   *             $ref: '#/components/schemas/Contact'
    *     tags:
    *       - contacts
    *     responses:
    *       200:
-   *         description: An updated contact
+   *         description: The contact has been updated successfully
    *         content:
    *           application/json:
    *             schema:
@@ -170,26 +457,197 @@ module.exports.setup = (app) => {
    *                   type: object
    *                   properties:
    *                     contact:
-   *                        $ref: '#/components/schemas/Contact'
+   *                       $ref: '#/components/schemas/Contact'
+   *       400:
+   *         description: Bad Request - Invalid input or missing required fields.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               properties:
+   *                 status:
+   *                   type: string
+   *                   description: The response status
+   *                   enum: [error]
+   *                 message:
+   *                   type: string
+   *                   description: Detailed error message
+   *       401:
+   *         description: Unauthorized - Authentication required.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               properties:
+   *                 status:
+   *                   type: string
+   *                   description: The response status
+   *                   enum: [error]
+   *                 message:
+   *                   type: string
+   *                   description: Detailed error message
+   *       403:
+   *         description: Forbidden - Access denied.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               properties:
+   *                 status:
+   *                   type: string
+   *                   description: The response status
+   *                   enum: [error]
+   *                 message:
+   *                   type: string
+   *                   description: Detailed error message
+   *       404:
+   *         description: Not Found - Contact not found.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               properties:
+   *                 status:
+   *                   type: string
+   *                   description: The response status
+   *                   enum: [error]
+   *                 message:
+   *                   type: string
+   *                   description: Detailed error message
+   *       409:
+   *         description: Conflict - Duplicate data found.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               properties:
+   *                 status:
+   *                   type: string
+   *                   description: The response status
+   *                   enum: [error]
+   *                 message:
+   *                   type: string
+   *                   description: Detailed error message
+   *       422:
+   *         description: Unprocessable Entity - Validation errors.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               properties:
+   *                 status:
+   *                   type: string
+   *                   description: The response status
+   *                   enum: [error]
+   *                 message:
+   *                   type: string
+   *                   description: Detailed error message
+   *       500:
+   *         description: Internal Server Error - The server encountered an unexpected condition.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               properties:
+   *                 status:
+   *                   type: string
+   *                   description: The response status
+   *                   enum: [error]
+   *                 message:
+   *                   type: string
+   *                   description: Detailed error message
    */
-  //router.put("/:id", contactsController.updateContact);
-  router.put("/:id",avatarUpload, contactsController.updateContact);
+  router.put("/:id", avatarUpload, contactsController.updateContact);
 
   /**
    * @swagger
    * /api/v1/contacts/{id}:
-   *  delete:
-   *    sunmary: Delete contact by ID
-   *    description: Delete contact by ID
-   *    parameters:
-   *      - $ref: '#/components/parameters/contactIdParam'
-   *    tags:
-   *      - contacts
-   *    responses:
-   *      200:
-   *        description: Contact deleted
-   *        $ref: '#/components/responses/200NoData'
+   *   delete:
+   *     summary: Delete contact by ID
+   *     description: Delete a contact by its ID
+   *     parameters:
+   *       - $ref: '#/components/parameters/contactIdParam'
+   *     tags:
+   *       - contacts
+   *     responses:
+   *       200:
+   *         description: Contact deleted successfully
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: '#/components/responses/200NoData'
+   *       400:
+   *         description: Bad Request - Invalid ID format.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               properties:
+   *                 status:
+   *                   type: string
+   *                   description: The response status
+   *                   enum: [error]
+   *                 message:
+   *                   type: string
+   *                   description: Detailed error message
+   *       401:
+   *         description: Unauthorized - Authentication required.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               properties:
+   *                 status:
+   *                   type: string
+   *                   description: The response status
+   *                   enum: [error]
+   *                 message:
+   *                   type: string
+   *                   description: Detailed error message
+   *       403:
+   *         description: Forbidden - Access denied.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               properties:
+   *                 status:
+   *                   type: string
+   *                   description: The response status
+   *                   enum: [error]
+   *                 message:
+   *                   type: string
+   *                   description: Detailed error message
+   *       404:
+   *         description: Not Found - Contact not found.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               properties:
+   *                 status:
+   *                   type: string
+   *                   description: The response status
+   *                   enum: [error]
+   *                 message:
+   *                   type: string
+   *                   description: Detailed error message
+   *       500:
+   *         description: Internal Server Error - The server encountered an unexpected condition.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               properties:
+   *                 status:
+   *                   type: string
+   *                   description: The response status
+   *                   enum: [error]
+   *                 message:
+   *                   type: string
+   *                   description: Detailed error message
    */
   router.delete("/:id", contactsController.deleteContact);
+
   router.all("/:id", methodNotAllowed);
 };
