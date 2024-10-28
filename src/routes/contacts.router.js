@@ -247,7 +247,6 @@ module.exports.setup = (app) => {
    *                   type: string
    *                   description: Detailed error message
    */
-  router.post("/", contactsController.createContact);
   router.post("/", avatarUpload, contactsController.createContact);
 
   /**

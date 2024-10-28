@@ -1,12 +1,10 @@
-
-
 const multer = require("multer");
 const path = require("path");
 const ApiError = require("../api-error");
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, "./public/uplaods/");
+    cb(null, "./public/uploads/");
   },
   filename: function (req, file, cb) {
     const uniquePrefix = Date.now() + "-" + Math.round(Math.random() * 1e9);

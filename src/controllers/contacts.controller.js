@@ -36,7 +36,7 @@ async function createContact(req, res, next) {
 async function getContactsByFilter(req, res, next) {
   //let contacts = [];
   let result = {
-    contscts: [],
+    contacts: [],
     metadata: {
       totalRecords: 0,
       firstPage: 1,
